@@ -1,4 +1,5 @@
-import { DollarSign, BarChart3, Package, Factory, LayoutDashboard } from 'lucide-react';
+import { DollarSign, BarChart3, Package, LayoutDashboard } from 'lucide-react';
+import egLogo from '../../assets/eg-logo.png';
 
 const navItems = [
   { id: 'mydashboard', label: 'My Dashboard', icon: LayoutDashboard },
@@ -12,9 +13,7 @@ export default function Sidebar({ activeView, onViewChange }) {
     <aside className="hidden lg:flex lg:flex-col lg:w-60 bg-slate-900 text-white min-h-screen shrink-0">
       {/* Brand */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-slate-700">
-        <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center">
-          <Factory className="w-5 h-5 text-white" />
-        </div>
+        <img src={egLogo} alt="Escalate Group" className="w-9 h-9 rounded-lg object-cover" />
         <div>
           <h1 className="text-sm font-bold leading-tight">MFG Insights</h1>
           <p className="text-[11px] text-slate-400">Business Intelligence</p>

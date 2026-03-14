@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Bell, ChevronDown, Menu, X, DollarSign, BarChart3, Package, LayoutDashboard } from 'lucide-react';
 import { AlertCount } from '../shared/AlertBadge';
 import AlertBadge from '../shared/AlertBadge';
+import egLogo from '../../assets/eg-logo.png';
 
 const roles = ['Executive', 'Operations Manager', 'Finance'];
 const dateRanges = ['MTD', 'QTD', 'YTD', 'Custom'];
@@ -36,13 +37,16 @@ export default function Header({
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
       <div className="flex items-center justify-between px-4 lg:px-6 h-14">
-        {/* Mobile menu button */}
-        <button
-          className="lg:hidden p-1.5 rounded-md hover:bg-slate-100"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {/* Mobile menu button + logo */}
+        <div className="flex items-center gap-3">
+          <button
+            className="lg:hidden p-1.5 rounded-md hover:bg-slate-100"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+          <img src={egLogo} alt="Escalate Group" className="lg:hidden w-7 h-7 rounded-md object-cover" />
+        </div>
 
         <h2 className="text-lg font-semibold text-slate-900">{titles[activeView]}</h2>
 
