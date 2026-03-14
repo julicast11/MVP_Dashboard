@@ -37,7 +37,7 @@ export default function Header({
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
       <div className="flex items-center justify-between px-4 lg:px-6 h-14">
-        {/* Mobile menu button + logo */}
+        {/* Logo + title */}
         <div className="flex items-center gap-3">
           <button
             className="lg:hidden p-1.5 rounded-md hover:bg-slate-100"
@@ -45,10 +45,12 @@ export default function Header({
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <img src={egLogo} alt="Escalate Group" className="lg:hidden w-7 h-7 rounded-md object-cover" />
+          <img src={egLogo} alt="Escalate Group" className="w-8 h-8 rounded-md object-cover" />
+          <div className="flex flex-col">
+            <h2 className="text-lg font-semibold text-slate-900 leading-tight">{titles[activeView]}</h2>
+            <span className="hidden sm:block text-[10px] text-slate-400 leading-tight">Escalate Group</span>
+          </div>
         </div>
-
-        <h2 className="text-lg font-semibold text-slate-900">{titles[activeView]}</h2>
 
         {/* Controls */}
         <div className="flex items-center gap-3">
