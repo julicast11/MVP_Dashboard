@@ -6,6 +6,8 @@ import FinancialDashboard from './components/Financial/FinancialDashboard';
 import InventoryDashboard from './components/Inventory/InventoryDashboard';
 import ComposableDashboard from './components/Composable/ComposableDashboard';
 import ExportMenu from './components/shared/ExportMenu';
+import ThemeSettings from './components/shared/ThemeSettings';
+import { ThemeProvider } from './components/shared/ThemeContext';
 import { activeAlerts } from './data/mockData';
 
 const fileNames = {
@@ -29,25 +31,28 @@ export default function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <Sidebar activeView={activeView} onViewChange={setActiveView} />
+    <ThemeProvider>
+      <div className="flex min-h-screen bg-slate-50">
+        <Sidebar activeView={activeView} onViewChange={setActiveView} />
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <Header
-          activeView={activeView}
-          onViewChange={setActiveView}
-          role={role}
-          onRoleChange={setRole}
-          dateRange={dateRange}
-          onDateRangeChange={setDateRange}
-          alerts={activeAlerts}
-          exportMenu={<ExportMenu targetRef={mainRef} fileName={fileNames[activeView]} />}
-        />
+        <div className="flex-1 flex flex-col min-w-0">
+          <Header
+            activeView={activeView}
+            onViewChange={setActiveView}
+            role={role}
+            onRoleChange={setRole}
+            dateRange={dateRange}
+            onDateRangeChange={setDateRange}
+            alerts={activeAlerts}
+            exportMenu={<ExportMenu targetRef={mainRef} fileName={fileNames[activeView]} />}
+            themeSettings={<ThemeSettings />}
+          />
 
-        <main ref={mainRef} className="flex-1 p-4 lg:p-6 overflow-y-auto">
-          {views[activeView]}
-        </main>
+          <main ref={mainRef} className="flex-1 p-4 lg:p-6 overflow-y-auto">
+            {views[activeView]}
+          </main>
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }

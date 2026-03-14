@@ -21,6 +21,7 @@ export default function Header({
   onDateRangeChange,
   alerts = [],
   exportMenu,
+  themeSettings,
 }) {
   const [showAlerts, setShowAlerts] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -78,6 +79,9 @@ export default function Header({
               </button>
             ))}
           </div>
+
+          {/* Theme settings */}
+          {themeSettings && <div className="hidden sm:block">{themeSettings}</div>}
 
           {/* Export */}
           {exportMenu && <div className="hidden sm:block">{exportMenu}</div>}
