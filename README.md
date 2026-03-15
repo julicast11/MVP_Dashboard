@@ -1,4 +1,27 @@
-# React + Vite
+# Manufacturing Dashboard
+
+## Getting Started
+
+Before running the dashboard, install dependencies:
+
+```bash
+npm install
+```
+
+Then start the dev server:
+
+```bash
+npm run dev
+```
+
+> **Note:** This project uses a `node_modules.nosync` folder with a symlink to prevent OneDrive from syncing dependencies. If the symlink breaks or `node_modules` is missing, run:
+> ```bash
+> mkdir -p node_modules.nosync && ln -s node_modules.nosync node_modules && npm install
+> ```
+
+---
+
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
