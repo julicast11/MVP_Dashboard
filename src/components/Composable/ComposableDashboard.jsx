@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, X, GripVertical, LayoutDashboard, Pin } from 'lucide-react';
+import { Plus, X, LayoutDashboard, Pin } from 'lucide-react';
 import KPICard from '../shared/KPICard';
 import {
   cashFlowSummary, arAging, apSummary, cashFlowTimeSeries, cashForecast,
@@ -18,7 +18,6 @@ const fmtN = (v) => v.toLocaleString();
 // ── All available tiles a user can pin ──
 
 const AVAILABLE_TILES = [
-  // Cash Flow tiles
   { id: 'cf-net-cash', label: 'Net Cash Position', source: 'Cash Flow', size: 'kpi' },
   { id: 'cf-burn-rate', label: 'Burn Rate', source: 'Cash Flow', size: 'kpi' },
   { id: 'cf-ap', label: 'Accounts Payable', source: 'Cash Flow', size: 'kpi' },
@@ -27,7 +26,6 @@ const AVAILABLE_TILES = [
   { id: 'cf-ar-aging', label: 'AR Aging Breakdown', source: 'Cash Flow', size: 'chart' },
   { id: 'cf-forecast-line', label: 'Projected Cash Position', source: 'Cash Flow', size: 'chart-wide' },
 
-  // Financial tiles
   { id: 'fin-revenue', label: 'Revenue MTD', source: 'Financial', size: 'kpi' },
   { id: 'fin-margin', label: 'Gross Margin %', source: 'Financial', size: 'kpi' },
   { id: 'fin-ebitda', label: 'EBITDA', source: 'Financial', size: 'kpi' },
@@ -36,7 +34,6 @@ const AVAILABLE_TILES = [
   { id: 'fin-opex', label: 'Operating Expenses', source: 'Financial', size: 'chart' },
   { id: 'fin-net-income', label: 'Net Income Trend', source: 'Financial', size: 'chart-wide' },
 
-  // Inventory tiles
   { id: 'inv-value', label: 'Total Inventory Value', source: 'Inventory', size: 'kpi' },
   { id: 'inv-turnover', label: 'Inventory Turnover', source: 'Inventory', size: 'kpi' },
   { id: 'inv-days', label: 'Days on Hand', source: 'Inventory', size: 'kpi' },
@@ -44,11 +41,6 @@ const AVAILABLE_TILES = [
   { id: 'inv-by-category', label: 'Inventory by Category', source: 'Inventory', size: 'chart' },
   { id: 'inv-stock-flow', label: 'Stock Flow In vs Out', source: 'Inventory', size: 'chart' },
   { id: 'inv-alerts-table', label: 'Stock Alerts Table', source: 'Inventory', size: 'chart-wide' },
-];
-
-const DEFAULT_PINNED = [
-  'cf-net-cash', 'fin-revenue', 'fin-margin', 'inv-alerts-count',
-  'cf-inflows-outflows', 'fin-rev-cogs',
 ];
 
 // ── Tile renderers ──
@@ -62,7 +54,6 @@ function renderTile(id) {
   const sortedInventory = [...inventoryByCategory].sort((a, b) => b.value - a.value);
 
   switch (id) {
-    // ── Cash Flow KPIs ──
     case 'cf-net-cash':
       return <KPICard label="Net Cash Position" value={s.netCashPosition} prior={s.priorPeriodCash} prefix="$" status="green" />;
     case 'cf-burn-rate':
@@ -71,8 +62,6 @@ function renderTile(id) {
       return <KPICard label="Accounts Payable" value={apSummary.totalPayable} prior={1750000} prefix="$" invertColor status={apSummary.overdue > 200000 ? 'red' : 'green'} />;
     case 'cf-forecast-kpi':
       return <KPICard label="30-Day Cash Forecast" value={s.projectedCash30Days} prior={s.netCashPosition} prefix="$" status="green" />;
-
-    // ── Cash Flow Charts ──
     case 'cf-inflows-outflows':
       return (
         <ResponsiveContainer width="100%" height={220}>
@@ -113,8 +102,6 @@ function renderTile(id) {
           </LineChart>
         </ResponsiveContainer>
       );
-
-    // ── Financial KPIs ──
     case 'fin-revenue':
       return <KPICard label="Revenue MTD" value={k.revenueMTD} prior={k.revenuePrior} prefix="$" status="green" />;
     case 'fin-margin':
@@ -123,8 +110,6 @@ function renderTile(id) {
       return <KPICard label="EBITDA" value={k.ebitda} prior={k.ebitdaPrior} prefix="$" status="green" />;
     case 'fin-dso':
       return <KPICard label="Days Sales Outstanding" value={k.dso} prior={k.dsoPrior} suffix=" days" invertColor target={45} status={k.dso > 60 ? 'red' : k.dso > 45 ? 'yellow' : 'green'} />;
-
-    // ── Financial Charts ──
     case 'fin-rev-cogs':
       return (
         <ResponsiveContainer width="100%" height={220}>
@@ -164,8 +149,6 @@ function renderTile(id) {
           </LineChart>
         </ResponsiveContainer>
       );
-
-    // ── Inventory KPIs ──
     case 'inv-value':
       return <KPICard label="Total Inventory Value" value={ik.totalValue} prefix="$" prior={6200000} status="green" />;
     case 'inv-turnover':
@@ -174,12 +157,10 @@ function renderTile(id) {
       return <KPICard label="Days on Hand" value={ik.daysOnHand} prior={ik.daysOnHandPrior} suffix=" days" invertColor status={ik.daysOnHand > 90 ? 'red' : ik.daysOnHand > 75 ? 'yellow' : 'green'} />;
     case 'inv-alerts-count':
       return <KPICard label="Stock Alerts" value={stockAlerts.filter(a => a.status === 'critical').length} suffix=" critical" status={stockAlerts.some(a => a.status === 'critical') ? 'red' : 'green'} />;
-
-    // ── Inventory Charts ──
     case 'inv-by-category':
       return (
         <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={sortedInventory} layout="vertical" barSize={20}>
+          <BarChart data={[...inventoryByCategory].sort((a, b) => b.value - a.value)} layout="vertical" barSize={20}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
             <XAxis type="number" tickFormatter={fmtK} tick={{ fontSize: 10 }} />
             <YAxis type="category" dataKey="category" tick={{ fontSize: 11 }} width={105} />
@@ -238,13 +219,11 @@ function renderTile(id) {
           </table>
         </div>
       );
-
     default:
       return <p className="text-sm text-slate-400">Unknown tile</p>;
   }
 }
 
-// ── Source badge colors ──
 const sourceColors = {
   'Cash Flow': 'bg-emerald-100 text-emerald-700',
   'Financial': 'bg-blue-100 text-blue-700',
@@ -252,8 +231,8 @@ const sourceColors = {
 };
 
 export default function ComposableDashboard() {
-  const [pinnedIds, setPinnedIds] = useState(DEFAULT_PINNED);
-  const [showPicker, setShowPicker] = useState(false);
+  const [pinnedIds, setPinnedIds] = useState([]);
+  const [showPicker, setShowPicker] = useState(true);
   const [filterSource, setFilterSource] = useState('All');
 
   const pinned = pinnedIds.map(id => AVAILABLE_TILES.find(t => t.id === id)).filter(Boolean);
@@ -263,27 +242,21 @@ export default function ComposableDashboard() {
   const addTile = (id) => setPinnedIds(prev => [...prev, id]);
   const removeTile = (id) => setPinnedIds(prev => prev.filter(x => x !== id));
 
-  const moveTile = (index, direction) => {
-    const newIds = [...pinnedIds];
-    const targetIndex = index + direction;
-    if (targetIndex < 0 || targetIndex >= newIds.length) return;
-    [newIds[index], newIds[targetIndex]] = [newIds[targetIndex], newIds[index]];
-    setPinnedIds(newIds);
-  };
-
-  // Separate KPIs from charts for layout
   const kpiTiles = pinned.filter(t => t.size === 'kpi');
   const chartTiles = pinned.filter(t => t.size === 'chart');
   const wideTiles = pinned.filter(t => t.size === 'chart-wide');
 
   return (
     <div className="space-y-6">
-      {/* ── Header with pin button ── */}
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">Your Custom Dashboard</h3>
+          <h3 className="text-sm font-semibold text-slate-900">Build Your Dashboard</h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            {pinned.length} tile{pinned.length !== 1 ? 's' : ''} pinned from {new Set(pinned.map(t => t.source)).size} source{new Set(pinned.map(t => t.source)).size !== 1 ? 's' : ''}
+            {pinned.length === 0
+              ? 'Add tiles from any data source to get started'
+              : `${pinned.length} tile${pinned.length !== 1 ? 's' : ''} from ${new Set(pinned.map(t => t.source)).size} source${new Set(pinned.map(t => t.source)).size !== 1 ? 's' : ''}`
+            }
           </p>
         </div>
         <button
@@ -295,11 +268,11 @@ export default function ComposableDashboard() {
           }`}
         >
           {showPicker ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-          {showPicker ? 'Close' : 'Pin Tiles'}
+          {showPicker ? 'Close' : 'Add Tiles'}
         </button>
       </div>
 
-      {/* ── Tile Picker ── */}
+      {/* Tile Picker */}
       {showPicker && (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between mb-4">
@@ -319,7 +292,7 @@ export default function ComposableDashboard() {
             </div>
           </div>
           {filteredUnpinned.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-4">All tiles from this source are pinned</p>
+            <p className="text-sm text-slate-400 text-center py-4">All tiles from this source are added</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {filteredUnpinned.map(tile => (
@@ -342,17 +315,15 @@ export default function ComposableDashboard() {
         </div>
       )}
 
-      {/* ── Pinned KPI Row ── */}
+      {/* Pinned KPI Row */}
       {kpiTiles.length > 0 && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {kpiTiles.map(tile => (
             <div key={tile.id} className="relative group">
               {renderTile(tile.id)}
-              {/* Source badge */}
               <span className={`absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded text-[9px] font-medium opacity-0 group-hover:opacity-100 transition-opacity ${sourceColors[tile.source]}`}>
                 {tile.source}
               </span>
-              {/* Remove button */}
               <button
                 onClick={() => removeTile(tile.id)}
                 className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs"
@@ -364,7 +335,7 @@ export default function ComposableDashboard() {
         </div>
       )}
 
-      {/* ── Pinned Charts (half-width) ── */}
+      {/* Pinned Charts (half-width) */}
       {chartTiles.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {chartTiles.map(tile => (
@@ -389,7 +360,7 @@ export default function ComposableDashboard() {
         </div>
       )}
 
-      {/* ── Pinned Wide Charts ── */}
+      {/* Pinned Wide Charts */}
       {wideTiles.map(tile => (
         <div key={tile.id} className="relative group bg-white rounded-xl shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between mb-3">
@@ -410,17 +381,17 @@ export default function ComposableDashboard() {
         </div>
       ))}
 
-      {/* ── Empty state ── */}
-      {pinned.length === 0 && (
+      {/* Empty state */}
+      {pinned.length === 0 && !showPicker && (
         <div className="bg-white rounded-xl shadow-sm border border-dashed border-slate-300 p-12 text-center">
           <LayoutDashboard className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-sm font-semibold text-slate-700">No tiles pinned yet</h3>
-          <p className="text-xs text-slate-500 mt-1 mb-4">Click "Pin Tiles" to add KPIs and charts from any data source</p>
+          <h3 className="text-sm font-semibold text-slate-700">No tiles added yet</h3>
+          <p className="text-xs text-slate-500 mt-1 mb-4">Click "Add Tiles" to build your dashboard with KPIs and charts</p>
           <button
             onClick={() => setShowPicker(true)}
             className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
           >
-            <Plus className="w-4 h-4" /> Pin Your First Tile
+            <Plus className="w-4 h-4" /> Add Your First Tile
           </button>
         </div>
       )}

@@ -1,11 +1,12 @@
-import { DollarSign, BarChart3, Package, LayoutDashboard } from 'lucide-react';
-import egLogo from '../../assets/eg-logo.png';
+import { DollarSign, BarChart3, Package, LayoutDashboard, SlidersHorizontal } from 'lucide-react';
+import egLogo from '../../assets/eg-logo.svg';
 
 const navItems = [
   { id: 'mydashboard', label: 'My Dashboard', icon: LayoutDashboard },
   { id: 'cashflow', label: 'Cash Flow', icon: DollarSign },
   { id: 'financial', label: 'Financial Reports', icon: BarChart3 },
   { id: 'inventory', label: 'Inventory', icon: Package },
+  { id: 'custom', label: 'Custom Dashboard', icon: SlidersHorizontal },
 ];
 
 export default function Sidebar({ activeView, onViewChange }) {

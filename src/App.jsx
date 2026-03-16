@@ -4,6 +4,7 @@ import Header from './components/Layout/Header';
 import CashFlowDashboard from './components/CashFlow/CashFlowDashboard';
 import FinancialDashboard from './components/Financial/FinancialDashboard';
 import InventoryDashboard from './components/Inventory/InventoryDashboard';
+import OverviewDashboard from './components/Overview/OverviewDashboard';
 import ComposableDashboard from './components/Composable/ComposableDashboard';
 import ExportMenu from './components/shared/ExportMenu';
 import ThemeSettings from './components/shared/ThemeSettings';
@@ -15,6 +16,7 @@ const fileNames = {
   cashflow: 'cash-flow',
   financial: 'financial-reports',
   inventory: 'inventory-status',
+  custom: 'custom-dashboard',
 };
 
 export default function App() {
@@ -24,10 +26,11 @@ export default function App() {
   const mainRef = useRef(null);
 
   const views = {
-    mydashboard: <ComposableDashboard />,
+    mydashboard: <OverviewDashboard />,
     cashflow: <CashFlowDashboard />,
     financial: <FinancialDashboard />,
     inventory: <InventoryDashboard />,
+    custom: <ComposableDashboard />,
   };
 
   return (

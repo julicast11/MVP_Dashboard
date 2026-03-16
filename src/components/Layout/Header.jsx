@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Bell, ChevronDown, Menu, X, DollarSign, BarChart3, Package, LayoutDashboard } from 'lucide-react';
+import { Bell, ChevronDown, Menu, X, DollarSign, BarChart3, Package, LayoutDashboard, SlidersHorizontal } from 'lucide-react';
 import { AlertCount } from '../shared/AlertBadge';
 import AlertBadge from '../shared/AlertBadge';
-import egLogo from '../../assets/eg-logo.png';
+import egLogo from '../../assets/eg-logo.svg';
 
 const roles = ['Executive', 'Operations Manager', 'Finance'];
 const dateRanges = ['MTD', 'QTD', 'YTD', 'Custom'];
@@ -11,6 +11,7 @@ const mobileNav = [
   { id: 'cashflow', label: 'Cash Flow', icon: DollarSign },
   { id: 'financial', label: 'Financial', icon: BarChart3 },
   { id: 'inventory', label: 'Inventory', icon: Package },
+  { id: 'custom', label: 'Custom Dashboard', icon: SlidersHorizontal },
 ];
 
 export default function Header({
@@ -32,6 +33,7 @@ export default function Header({
     cashflow: 'Cash Flow Dashboard',
     financial: 'Financial Reports',
     inventory: 'Inventory Status',
+    custom: 'Custom Dashboard',
   };
 
   return (
